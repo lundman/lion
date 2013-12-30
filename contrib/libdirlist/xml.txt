@@ -1,0 +1,15 @@
+<dir:directory xmlns:dir="http://apache.org/cocoon/directory/2.0"
+    name="stylesheets"
+    lastModified="1019666489000"
+    date="24.04.02 18:41"
+    size="461"
+    sort="name"
+    reverse="false"
+    requested="true">
+    <dir:directory name="sites" lastModified="1019666489000"
+        date="24.04.02 18:41" size="118"/>
+    <dir:file name="dynamic-page2html.xsl" lastModified="1019666489000"
+        date="24.04.02 18:41" size="1832"/>
+    <dir:file name="simple-xml2html.xsl" lastModified="1019666489000"
+        date="24.04.02 18:41" size="12676"/>
+</dir:directory>
