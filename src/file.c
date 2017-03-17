@@ -119,8 +119,8 @@ connection_t *lion_open(char *file, int flags, mode_t modes,
         {
             struct fshare locker;
             int ret;
-            locker.f_access = F_WRACC;
-            locker.f_deny = F_WRDNY;
+            locker.f_access = (flags&O_RDONLY) ? F_RDACC : F_WRACC;
+            locker.f_deny = F_RDDNY;
 
             // Does the file already exist?
             newd->socket = open( file, O_RDWR, modes );
@@ -128,6 +128,10 @@ connection_t *lion_open(char *file, int flags, mode_t modes,
 
                 // id should just be something unique, and filedes are that
                 locker.f_id = newd->socket;
+
+                // Solaris will automatically lock it in open() if mount
+                // option nbmand is set, so first remove that lock
+                ret = fcntl( newd->socket, F_UNSHARE, &locker);
 
                 ret = fcntl( newd->socket, F_SHARE, &locker);
                 if (ret == -1) {
