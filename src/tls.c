@@ -136,6 +136,8 @@ int tls_init( void )
 
 	if (RAND_status() != 1) {
 
+#ifdef USE_EGD
+/* systems without urandom need an OpenSSL compiled with -egd */
 		if ( (egdbytes = RAND_egd(ssl_egdsocket)) == -1 ) {
 
 			net_server_SSL = 0;
@@ -147,6 +149,7 @@ int tls_init( void )
 
 			return -2;
 		}
+#endif
 
 		if (RAND_status() != 1) {
 
