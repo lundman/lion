@@ -146,7 +146,7 @@ connection_t *lion_open(char *file, int flags, mode_t modes,
                     if (flags|O_TRUNC)
                         ftruncate(newd->socket, 0);
                     if (flags|O_APPEND)
-                        lseek(newd->socket, SEEK_END, 0);
+                        lseek(newd->socket, 0, SEEK_END);
 
                 }
 
