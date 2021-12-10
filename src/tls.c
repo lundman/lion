@@ -255,7 +255,6 @@ void tls_close( connection_t *node )
 		printf("Releasing SSL socket\n");
 #endif
         SSL_shutdown(node->ctx);
-		SSL_free( node->ctx );
 		node->ctx = NULL;
 	}
 
