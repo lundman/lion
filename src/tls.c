@@ -174,6 +174,9 @@ int tls_init( void )
 	SSL_CTX_set_session_cache_mode(tls_ctx, SSL_SESS_CACHE_CLIENT);
 	SSL_CTX_set_session_id_context(tls_ctx, (const unsigned char *) "1", 1);
 
+	// Disable tickets, or we get short xfers with some ftpds.
+	SSL_CTX_set_num_tickets(tls_ctx, 0);
+
 	// That's sufficient for being a client (server communications)
 	// but we also need to load up certificates etc to attempt to
 	// allow clients to SSL with us.
