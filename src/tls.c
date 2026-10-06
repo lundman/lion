@@ -166,7 +166,8 @@ int tls_init( void )
 
 
 	// Set some options
-	SSL_CTX_set_options(tls_ctx, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3);
+	SSL_CTX_set_options(tls_ctx, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3|
+			    SSL_OP_NO_COMPRESSION );
 	//SSL_CTX_set_options(tls_ctx, SSL_OP_NO_SSLv3|SSL_OP_NO_TLSv1);
 	//SSL_CTX_set_options(tls_ctx, SSL_OP_NO_TLSv1);
 	SSL_CTX_set_default_verify_paths(tls_ctx);
@@ -328,6 +329,7 @@ int tls_auth( connection_t *node )
 void tls_cont_auth( connection_t *node )
 {
 	int status, sslerr;
+	char *sslerrstr;
 	char cipher_info[128];
 	SSL_CIPHER *cipher;
 
@@ -412,17 +414,17 @@ void tls_cont_auth( connection_t *node )
 			node->want_mode = NET_NEG_WANT_WRITE;
 			break;
 		default:
+			// ERR_get_error() pops the queue, so fetch it once.
+			sslerrstr = (char *)ERR_error_string(ERR_get_error(), NULL);
 #if 1
    			printf("tls_auth_cont: failed (%d, %d, %d): %s\n",
-			       sslerr, status, errno,
-			       (char *)ERR_error_string(ERR_get_error(), NULL));
+			       sslerr, status, errno, sslerrstr);
 #endif
 
 			if (node->trace)
 				fprintf(trace_file, "%p: tls_auth_cont: failed (%d, %d, %d) => %s\n",
 						node,
-						sslerr, status, errno,
-						(char *)ERR_error_string(ERR_get_error(), NULL));
+						sslerr, status, errno, sslerrstr);
 
 			node->use_ssl = 0;
 			node->auth_type = LION_SSL_OFF;
@@ -700,6 +702,7 @@ int tls_clauth( connection_t *node )
 void tls_cont_clauth( connection_t *node )
 {
 	int status, sslerr;
+	char *sslerrstr;
 	char cipher_info[128];
 	SSL_CIPHER *cipher;
 
@@ -777,14 +780,16 @@ void tls_cont_clauth( connection_t *node )
 #endif
 			break;
 		default:
+			// ERR_get_error() pops the queue, so fetch it once.
+			sslerrstr = (char *)ERR_error_string(ERR_get_error(), NULL);
 #ifdef DEBUG
-   			printf("tls_clauth_cont: failed (status,sslerr,errno) %d %d %d\n", status, sslerr, errno);
+   			printf("tls_clauth_cont: failed (%d, %d, %d): %s\n",
+			       sslerr, status, errno, sslerrstr);
 #endif
 			if (node->trace)
 				fprintf(trace_file, "%p: tls_clauth_cont: failed (%d, %d, %d) => %s\n",
 						node,
-						sslerr, status, errno,
-						(char *)ERR_error_string(ERR_get_error(), NULL));
+						sslerr, status, errno, sslerrstr);
 
 			node->use_ssl = 0;
 			node->want_ssl = LION_SSL_OFF;
