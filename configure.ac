@@ -32,6 +32,11 @@ AC_CHECK_FUNC([strcasestr],
                 [AC_DEFINE(HAVE_STRCASESTR,1,[Presence of strcasestr found])],
                 [])
 
+dnl BSD/macOS have strmode() in libc; others use contrib/libdirlist/strmode.c
+AC_CHECK_FUNC([strmode],
+                [AC_DEFINE(HAVE_STRMODE,1,[Presence of strmode found])],
+                [])
+
 if test "x$ac_cv_prog_gcc" = xyes ; then
    CFLAGS="$CFLAGS -Wall -g"
 fi

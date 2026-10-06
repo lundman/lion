@@ -576,6 +576,11 @@ int unix_type(int mode)
 }
 
 
+#ifndef HAVE_STRMODE
+// contrib/libdirlist/strmode.c
+void strmode(mode_t mode, char *p);
+#endif
+
 char *unix_strmode(unsigned long mode)
 {
 	static char str[12];

@@ -71,8 +71,8 @@
 #include <config.h>
 #endif
 
-// Some OS's already have this:
-#if !defined (__NetBSD__) && !defined (__FreeBSD__) && !defined (__Linux__)
+// Some OS's already have this (BSD, macOS), see configure.ac
+#ifndef HAVE_STRMODE
 
 
 
@@ -88,9 +88,7 @@ static char *rcsid = "$Id: strmode.c,v 1.3 2007/12/17 08:03:59 lundman Exp $";
 #include <string.h>
 
 void
-strmode(mode, p)
-	register mode_t mode;
-	register char *p;
+strmode(mode_t mode, char *p)
 {
 	 /* print type */
 	switch (mode & S_IFMT) {
