@@ -181,7 +181,8 @@ void dirlist_child_no_recursion(char *norec)
 	if (dirlist_child_norec_num >= dirlist_child_norec_allocated) {
 
 		newd = realloc(dirlist_child_norec_files,
-					   dirlist_child_norec_allocated + NOREC_FILES_INCREMENT);
+			(dirlist_child_norec_allocated + NOREC_FILES_INCREMENT) *
+			sizeof(char *));
 
 		if (!newd) {
 
@@ -191,6 +192,9 @@ void dirlist_child_no_recursion(char *norec)
 			return;
 
 		}
+
+		memset(&newd[dirlist_child_norec_allocated],
+		       0, NOREC_FILES_INCREMENT * sizeof(char *));
 
 		dirlist_child_norec_allocated += NOREC_FILES_INCREMENT;
 		dirlist_child_norec_files = newd;

@@ -74,8 +74,9 @@ __RCSID("$LiON: lundman/lion/src/tls.c,v 1.7 2010/10/26 06:38:41 lundman Exp $")
 
 
 
+// No anonymous (unauthenticated) ciphers.
 static char cfg_tlsciphers[] =
-"ALL";
+"ALL:!aNULL";
 
 
 // Master TLS context
@@ -167,7 +168,7 @@ int tls_init( void )
 
 	// Set some options
 	SSL_CTX_set_options(tls_ctx, SSL_OP_NO_SSLv2|SSL_OP_NO_SSLv3|
-			    SSL_OP_NO_COMPRESSION );
+			    SSL_OP_NO_COMPRESSION|SSL_OP_CIPHER_SERVER_PREFERENCE );
 	//SSL_CTX_set_options(tls_ctx, SSL_OP_NO_SSLv3|SSL_OP_NO_TLSv1);
 	//SSL_CTX_set_options(tls_ctx, SSL_OP_NO_TLSv1);
 	SSL_CTX_set_default_verify_paths(tls_ctx);

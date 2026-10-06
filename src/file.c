@@ -115,6 +115,31 @@ connection_t *lion_open(char *file, int flags, mode_t modes,
         // This works best on NetBSD for some reason.
 		newd->socket = open( file, flags | O_EXLOCK | O_NONBLOCK, modes );
 
+#elif defined F_OFD_SETLK
+        // Open file description locks: unlike plain fcntl() locks, these
+        // conflict within the same process, so they work for lion.
+        {
+			struct flock locker;
+            memset(&locker, 0, sizeof(locker));
+			locker.l_start = 0;         // offset from whence
+			locker.l_len   = 0;         // whole file
+			locker.l_pid   = 0;         // must be 0 for OFD locks
+			locker.l_type  = F_WRLCK;
+			locker.l_whence= SEEK_SET;  // start of file.
+
+			newd->socket = open( file, flags, modes );
+
+			if (newd->socket >= 0) {
+
+				if (fcntl( newd->socket, F_OFD_SETLK, &locker) == -1) {
+
+					close(newd->socket);
+					newd->socket = -1;
+
+				}
+			}
+		}
+
 #elif defined F_SHARE
         {
             struct fshare locker;
